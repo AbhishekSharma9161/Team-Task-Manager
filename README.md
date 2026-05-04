@@ -1,4 +1,4 @@
-# ⚡ Team Task Manager
+# ⚡ FlowDesk — Team Task Manager
 
 > A modern, full-stack team task management application with a dark, editorial aesthetic.
 
@@ -8,401 +8,94 @@
 [![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green)](https://www.mongodb.com/cloud/atlas)
 [![Express](https://img.shields.io/badge/Express-4-black)](https://expressjs.com/)
 
-**Built with:** React, Node.js, Express, MongoDB, Tailwind CSS, Framer Motion
+**Built with:** React · Node.js · Express · MongoDB · Tailwind CSS · Framer Motion
 
 ---
 
 ## 🎯 Overview
 
-Team Task Manager is a collaborative project management application designed for teams to organize, track, and complete tasks efficiently. Features include a Kanban board, role-based access control, real-time dashboard analytics, and a beautiful dark UI optimized for extended use.
+Team Task Manager is a collaborative project management app where teams can organize, assign, and track tasks efficiently. It features a Kanban board, role-based access control, real-time dashboard analytics, and a beautiful dark UI.
 
 **Key Highlights:**
 - 🔐 JWT Authentication with 7-day expiry
 - 📊 Interactive Dashboard with Charts
-- 📋 Kanban Board with Drag & Drop
-- 👥 Role-Based Access Control (Admin/Member)
+- 📋 Kanban Board (To Do / In Progress / Done)
+- 👥 Role-Based Access Control (Admin / Member)
 - 🎨 Dark Editorial Aesthetic UI
 - ⚡ Real-time Task Status Updates
-- 🔔 Notification System
 - 📱 Responsive Design
 
 ---
 
-## 📑 Table of Contents
+## 🚀 Quick Start
 
-- [✨ Features](#-features)
-- [📋 Prerequisites](#-prerequisites)
-- [🚀 Quick Start](#-quick-start)
-- [📁 Project Structure](#-project-structure)
-- [🔑 Demo Credentials](#-demo-credentials)
-- [📚 API Reference](#-api-reference)
-- [🛠 Tech Stack](#-tech-stack)
-- [🎨 Design System](#-design-system)
-- [🚀 Deployment](#-deployment)
-- [🤝 Contributing](#-contributing)
-- [📝 License](#-license)
+### Prerequisites
 
----
+- Node.js 18+
+- MongoDB (local or Atlas)
+- npm or yarn
 
-## ✨ Features
+### 1. Clone the Repository
 
-### 🔐 Authentication
-- JWT-based authentication with 7-day expiry
-- Secure password hashing with bcrypt (12 rounds)
-- Protected routes (both frontend and backend)
-- Persistent login state with Zustand
-- Profile management and updates
-
-### 📊 Projects
-- Create projects with custom name, description, and color coding
-- Admin role automatically assigned to project creator
-- Add/remove team members by email
-- Role-based member management (Admin/Member)
-- Real-time progress tracking (completed tasks / total tasks)
-- Archive/restore functionality
-
-### 📋 Task Management
-- Interactive Kanban board (To Do / In Progress / Done)
-- Priority levels: Low, Medium, High, Urgent
-- Due date tracking with automated overdue detection
-- Task assignment to project members
-- Inline status updates on Kanban board
-- Admin-level task management; Members can only update assigned tasks
-
-### 📈 Dashboard
-- Overview statistics (total projects, tasks, completed, overdue)
-- Visual task status pie chart
-- Tasks per user bar chart
-- Priority breakdown with animated progress bars
-- Recent tasks activity feed
-- Performance metrics
-
-### 🔑 Role-Based Access Control
-
-| Action                    | Admin | Member |
-|--------------------------|-------|--------|
-| Create/delete projects   | ✅    | ❌     |
-| Add/remove members       | ✅    | ❌     |
-| Create/delete tasks      | ✅    | ❌     |
-| Update any task          | ✅    | ❌     |
-| Update assigned task status | ✅ | ✅     |
-| View project tasks       | All   | Assigned only |
-| View dashboard           | ✅    | ✅     |
-
----
-
-## 📋 Prerequisites
-
-Before getting started, make sure you have the following installed:
-
-| Requirement | Version | Download |
-|------------|---------|----------|
-| Node.js | 18+ | [nodejs.org](https://nodejs.org/) |
-| npm | 8+ | Included with Node.js |
-| MongoDB | Latest | [Local](https://www.mongodb.com/try/download/community) or [Atlas Cloud](https://www.mongodb.com/cloud/atlas) |
-| Git | Latest | [git-scm.com](https://git-scm.com/) |
-
-**Verify installation:**
 ```bash
-node --version
-npm --version
-git --version
+git clone https://github.com/AbhishekSharma9161/Team-Task-Manager.git
+cd Team-Task-Manager
 ```
+
+### 2. Setup Backend
+
+```bash
+cd backend
+npm install
+cp .env.example .env
+```
+
+Edit `.env`:
+
+```env
+PORT=5000
+MONGODB_URI=mongodb://localhost:27017/team-task-manager
+JWT_SECRET=your_super_secret_key_here
+JWT_EXPIRES_IN=7d
+FRONTEND_URL=http://localhost:3000
+```
+
+### 3. Setup Frontend
+
+```bash
+cd ../frontend
+npm install
+```
+
+### 4. Seed Demo Data (Optional)
+
+```bash
+cd backend
+npm run seed
+```
+
+### 5. Run the App
+
+```bash
+# Terminal 1 — Backend (port 5000)
+cd backend && npm run dev
+
+# Terminal 2 — Frontend (port 3000)
+cd frontend && npm run dev
+```
+
+Visit **http://localhost:3000**
 
 ---
 
-## � Project Structure
+## 🔑 Demo Credentials
 
-```
-team-task-manager/
-│
-├── backend/
-│   ├── src/
-│   │   ├── controllers/
-│   │   │   ├── authController.js       # Signup, login, profile management
-│   │   │   ├── projectController.js    # CRUD + member management
-│   │   │   ├── taskController.js       # CRUD + role-based access
-│   │   │   └── dashboardController.js  # Stats & analytics
-│   │   │
-│   │   ├── middleware/
-│   │   │   └── auth.js                 # JWT protection + token generation
-│   │   │
-│   │   ├── models/
-│   │   │   ├── User.js                 # User schema with bcrypt hashing
-│   │   │   ├── Project.js              # Project + members schema
-│   │   │   └── Task.js                 # Task schema with virtual fields
-│   │   │
-│   │   ├── routes/
-│   │   │   ├── auth.js                 # Authentication endpoints
-│   │   │   ├── projects.js             # Project CRUD endpoints
-│   │   │   ├── tasks.js                # Task CRUD endpoints
-│   │   │   ├── dashboard.js            # Dashboard stats endpoints
-│   │   │   └── users.js                # User management endpoints
-│   │   │
-│   │   ├── utils/
-│   │   │   └── seed.js                 # Demo data seeder script
-│   │   │
-│   │   └── server.js                   # Express app entry point
-│   │
-│   ├── .env.example                    # Environment variables template
-│   ├── package.json
-│   └── package-lock.json
-│
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   └── ui/
-│   │   │       └── Layout.jsx          # Sidebar + main shell layout
-│   │   │
-│   │   ├── pages/
-│   │   │   ├── LoginPage.jsx           # User login
-│   │   │   ├── SignupPage.jsx          # User registration
-│   │   │   ├── DashboardPage.jsx       # Stats, charts, overview
-│   │   │   ├── ProjectsPage.jsx        # Project grid + create modal
-│   │   │   ├── ProjectDetailPage.jsx   # Kanban board + task modals
-│   │   │   └── TaskDetailPage.jsx      # Task view + status update
-│   │   │
-│   │   ├── store/
-│   │   │   └── authStore.js            # Zustand persisted auth state
-│   │   │
-│   │   ├── utils/
-│   │   │   └── api.js                  # Axios client with JWT interceptors
-│   │   │
-│   │   ├── styles/
-│   │   │   └── globals.css             # Tailwind CSS + custom styles
-│   │   │
-│   │   ├── App.jsx                     # Route definitions + guards
-│   │   └── main.jsx                    # React entry point
-│   │
-│   ├── index.html
-│   ├── vite.config.js
-│   ├── tailwind.config.js
-│   ├── postcss.config.js
-│   ├── package.json
-│   └── package-lock.json
-│
-├── .gitignore
-├── README.md
-└── LICENSE
-```
+| Role   | Email            | Password    |
+|--------|------------------|-------------|
+| Admin  | admin@demo.com   | password123 |
+| Member | jordan@demo.com  | password123 |
+| Member | riley@demo.com   | password123 |
 
 ---
 
-## 📚 API Reference
-
-### Authentication Endpoints
-
-```
-POST   /api/auth/signup              # Create new account
-POST   /api/auth/login               # User login
-GET    /api/auth/me                  # Get current user (protected)
-PATCH  /api/auth/profile             # Update profile (protected)
-```
-
-### Project Endpoints
-
-```
-GET    /api/projects                 # Get user's projects (protected)
-POST   /api/projects                 # Create new project (protected)
-GET    /api/projects/:id             # Get project details (protected)
-PATCH  /api/projects/:id             # Update project (admin only)
-DELETE /api/projects/:id             # Delete project (admin only)
-POST   /api/projects/:id/members     # Add member (admin only)
-DELETE /api/projects/:id/members/:userId  # Remove member (admin only)
-```
-
-### Task Endpoints
-
-```
-GET    /api/projects/:pid/tasks      # Get project tasks (protected)
-POST   /api/projects/:pid/tasks      # Create task (admin only)
-GET    /api/projects/:pid/tasks/:tid # Get task details (protected)
-PATCH  /api/projects/:pid/tasks/:tid # Update task (protected)
-DELETE /api/projects/:pid/tasks/:tid # Delete task (admin only)
-```
-
-### Dashboard Endpoints
-
-```
-GET    /api/dashboard                # Get stats + charts data (protected)
-```
-
----
-
-## 🛠 Tech Stack
-
-### Frontend
-- **React 18** — UI library with hooks
-- **Vite** — Next-generation build tool
-- **Tailwind CSS** — Utility-first styling framework
-- **Framer Motion** — Production-quality animations
-- **Recharts** — Composable charting library
-- **TanStack Query** — Server state management
-- **Zustand** — Lightweight state management for client state
-- **React Router v6** — SPA routing
-- **Axios** — Promise-based HTTP client
-- **React Hot Toast** — Toast notifications
-- **Lucide React** — Beautiful icon library
-
-### Backend
-- **Node.js** — JavaScript runtime
-- **Express** — Minimal web framework
-- **MongoDB** — NoSQL database
-- **Mongoose** — MongoDB object modeling
-- **JWT** — Stateless authentication
-- **bcryptjs** — Password hashing
-- **express-validator** — Request validation middleware
-
-### DevTools & Deployment
-- **Git** — Version control
-- **Docker** — (Optional) Containerization
-- **Railway/Render/Fly.io** — Backend deployment
-- **Vercel/Netlify** — Frontend deployment
-
----
-
-## 🎨 Design System
-
-### Typography
-- **Display Font:** Clash Display (headings)
-- **Body Font:** Cabinet Grotesk (body text)
-- **Mono Font:** JetBrains Mono (labels, code)
-
-### Color Palette
-- **Accent Color:** `#BFFF00` (acid green)
-- **Background:** `#0A0A0F` (deep ink)
-- **Cards:** Glassmorphism with subtle borders
-- **Text:** `#FFFFFF` (primary), `#A0A0A0` (secondary)
-
-### Components
-- Glassmorphic cards with backdrop blur
-- Smooth transitions and animations
-- Dark mode optimized
-- Accessible color contrasts
-
----
-
-## 🚀 Deployment
-
-### Backend Deployment (Railway/Render/Fly.io)
-
-1. **Set Environment Variables:**
-   ```
-   MONGODB_URI=your_production_mongodb_uri
-   JWT_SECRET=your_secure_random_secret
-   FRONTEND_URL=your_frontend_url
-   NODE_ENV=production
-   ```
-
-2. **Deploy from `/backend` folder**
-
-3. **Start Command:** `node src/server.js`
-
-### Frontend Deployment (Vercel/Netlify)
-
-1. **Update API URL:**
-   - Set `VITE_API_URL` in environment variables
-   - Or update `frontend/src/utils/api.js` to use env variable
-
-2. **Build Command:** `npm run build`
-
-3. **Output Directory:** `dist/`
-
-4. **Vercel Deployment:**
-   ```bash
-   npm i -g vercel
-   vercel
-   ```
-
-5. **Netlify Deployment:**
-   ```bash
-   npm run build
-   # Deploy the dist/ folder
-   ```
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Here's how you can help:
-
-1. **Fork the repository**
-2. **Create a feature branch:** `git checkout -b feature/YourFeature`
-3. **Make your changes**
-4. **Commit:** `git commit -m "Add YourFeature"`
-5. **Push:** `git push origin feature/YourFeature`
-6. **Open a Pull Request**
-
-### Development Guidelines
-
-- Follow existing code style
-- Add comments for complex logic
-- Test thoroughly before submitting
-- Update README if adding new features
-
----
-
-## 🐛 Troubleshooting
-
-### MongoDB Connection Issues
-
-**Error:** `MongoServerError: connect ECONNREFUSED`
-
-**Solution:**
-- Ensure MongoDB is running locally: `mongod`
-- Or use MongoDB Atlas connection string
-- Check `MONGODB_URI` in `.env`
-
-### CORS Errors
-
-**Solution:**
-- Verify `FRONTEND_URL` in backend `.env`
-- Check backend CORS middleware configuration
-- Ensure frontend API URL matches backend
-
-### Port Already in Use
-
-**Solution:**
-- Backend: `lsof -i :5000` and kill process
-- Frontend: `lsof -i :3000` and kill process
-- Or change port in `.env` / `vite.config.js`
-
-### JWT Token Issues
-
-**Solution:**
-- Clear browser localStorage: `localStorage.clear()`
-- Regenerate JWT_SECRET in `.env`
-- Re-login to refresh token
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
-
----
-
-## 👨‍💻 Author
-
-**Abhishek Sharma**
-- GitHub: [@AbhishekSharma9161](https://github.com/AbhishekSharma9161)
-- Project: [Team-Task-Manager](https://github.com/AbhishekSharma9161/Team-Task-Manager)
-
----
-
-## 🙏 Acknowledgments
-
-- [React](https://react.dev/) - UI library
-- [Express](https://expressjs.com/) - Web framework
-- [MongoDB](https://www.mongodb.com/) - Database
-- [Tailwind CSS](https://tailwindcss.com/) - Styling
-- [Framer Motion](https://www.framer.com/motion/) - Animations
-
----
-
-**Made with ❤️ by Abhishek Sharma**
-
-⭐ If you find this helpful, please give it a star! ⭐
-#   T e a m - T a s k - M a n a g e r 
- 
- 
+## 📁 Project Structure
