@@ -12,7 +12,7 @@ const userRoutes = require('./routes/users');
 
 const app = express();
 
-// Middleware
+// ✅ Fix CORS — allow all Vercel URLs + localhost
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5173',
@@ -20,18 +20,32 @@ const allowedOrigins = [
 ].filter(Boolean);
 
 app.use(cors({
-  origin: (origin, callback) => {
+  origin: function (origin, callback) {
     // Allow requests with no origin (mobile apps, curl, Postman)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.some(o => origin.startsWith(o))) {
-      return callback(null, true);
-    }
-    return callback(new Error(`CORS blocked: ${origin}`));
+
+    // Allow any vercel.app subdomain
+    if (origin.endsWith('.vercel.app')) return callback(null, true);
+
+    // Allow specific origins
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+
+    callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
 }));
+
 app.use(express.json());
 app.use(morgan('dev'));
+
+// ✅ Root route — fixes "Cannot GET /"
+app.get('/', (req, res) => {
+  res.json({
+    message: '⚡ FlowDesk API is running',
+    version: '1.0.0',
+    endpoints: '/api/auth, /api/projects, /api/tasks, /api/dashboard',
+  });
+});
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -57,7 +71,11 @@ app.use((err, req, res, next) => {
 // Connect to DB and start server
 const PORT = process.env.PORT || 5000;
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/team-task-manager')
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/team-task-manager', {
+  serverSelectionTimeoutMS: 60000,
+  socketTimeoutMS: 45000,
+  connectTimeoutMS: 60000,
+})
   .then(() => {
     console.log('✅ MongoDB connected');
     app.listen(PORT, () => {
@@ -65,7 +83,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/team-task
     });
   })
   .catch(err => {
-    console.error('❌ MongoDB connection error:', err);
+    console.error('❌ MongoDB connection error:', err.message);
     process.exit(1);
   });
 
